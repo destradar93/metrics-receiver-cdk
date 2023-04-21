@@ -1,19 +1,13 @@
 from aws_cdk import (
-    # Duration,
-    Stack,
-    # aws_sqs as sqs,
+    Stack
 )
 from constructs import Construct
 
-class MetricsReceiverCdkStack(Stack):
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+class MetricsReceiverCdkStack(Stack):
+    def __init__(self, scope: Construct, construct_id: str, prefix: str, environment: str, config: dict, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # The code that defines your stack goes here
-
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "MetricsReceiverCdkQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+        self.prefix = prefix
+        self.suffix = environment.capitalize()
+        self.configuration = config
