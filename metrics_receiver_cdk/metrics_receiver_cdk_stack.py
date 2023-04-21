@@ -2,6 +2,7 @@ from aws_cdk import (
     Stack,
     Duration,
     aws_sqs as sqs,
+    aws_dynamodb as dynamodb,
 )
 from constructs import Construct
 
@@ -18,3 +19,19 @@ class MetricsReceiverCdkStack(Stack):
         queue = sqs.Queue(self, f"{self.prefix}Queue{self.suffix}",
                           queue_name=f"{self.prefix}Queue{self.suffix}",
                           visibility_timeout=Duration.minutes(15))
+
+        dynamo_table = dynamodb.Table(
+            self, f"{self.prefix}Table{self.suffix}",
+            table_name=f"{self.prefix}Table{self.suffix}",
+            partition_key=dynamodb.Attribute(
+                name='deviceId',
+                type=dynamodb.AttributeType.STRING,
+            ),
+            sort_key=dynamodb.Attribute(
+                name='timestamp',
+                type=dynamodb.AttributeType.NUMBER,
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            deletion_protection=True
+        )
+
