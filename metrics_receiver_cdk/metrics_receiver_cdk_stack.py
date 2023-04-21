@@ -2,7 +2,11 @@ from aws_cdk import (
     Stack,
     Duration,
     aws_sqs as sqs,
+    aws_logs as logs,
+    aws_iam as iam,
+    aws_lambda as _lambda_,
     aws_dynamodb as dynamodb,
+    aws_lambda_event_sources as lambda_event_sources
 )
 from constructs import Construct
 
@@ -35,3 +39,32 @@ class MetricsReceiverCdkStack(Stack):
             deletion_protection=True
         )
 
+        lambda_ = _lambda_.Function(self, f"{self.prefix}Function{self.suffix}",
+                                    function_name=f"{self.prefix}Function{self.suffix}",
+                                    runtime=_lambda_.Runtime.PYTHON_3_9,
+                                    handler="index.lambda_handler",
+                                    timeout=Duration.minutes(1),
+                                    code=_lambda_.Code.from_asset("./lambdas"),
+                                    reserved_concurrent_executions=10,
+                                    log_retention=logs.RetentionDays.ONE_WEEK,
+                                    environment={
+                                        "DYNAMODB_TABLE": dynamo_table.table_name
+                                    })
+
+        lambda_.add_event_source(lambda_event_sources.SqsEventSource(
+            queue,
+            batch_size=20,
+            max_concurrency=10,
+            max_batching_window=Duration.minutes(5)
+        ))
+
+        lambda_.add_to_role_policy(
+            statement=iam.PolicyStatement(
+                actions=[
+                    'dynamodb:PutItem',
+                ],
+                resources=[
+                    dynamo_table.table_arn,
+                ],
+            ),
+        )
