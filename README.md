@@ -1,58 +1,47 @@
 
-# Welcome to your CDK Python project!
+# CDK Application for Receiving Data Metrics from Device
 
-This is a blank project for CDK development with Python.
+This is a CDK (Cloud Development Kit) application written in Python that is designed to receive data 
+metrics sent from a device. The application contains an SQS (Simple Queue Service) queue that receives messages 
+from the device, a Lambda function that is triggered by messages in the SQS queue, and a DynamoDB table that 
+stores the payload coming from the device using the device's unique identifier as the reference.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## What is the CDK?
+The AWS Cloud Development Kit (CDK) is an open source software development framework 
+to define cloud infrastructure in code and provision it through AWS CloudFormation. 
+It provides a high-level object-oriented abstraction on top of AWS CloudFormation that
+makes it easier to provision and manage AWS resources.
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+## Prerequisites
+Before you can use this CDK application, you will need to have the following:
 
-To manually create a virtualenv on MacOS and Linux:
+* AWS Account
+* AWS CLI installed and configured
+* Python 3.7 or later
+* Node.js 18.16.0 or later
+* AWS CDK installed (version 2.75.0 or later)
 
-```
-$ python3 -m venv .venv
-```
+## Getting Started
+1. Clone this repository to your local machine.
+2. Navigate to the root directory of the project.
+3. Create virtual environment ``` python3 -m venv .venv```
+4. Activate virtual environment. 
+* Linux: ```source .venv/bin/activate``` 
+* Windows: ```.venv\Scripts\activate```
+5. Install the required dependencies ``` pip install -r requirements.txt ```
+6. Synthesize the CloudFormation template for this code ``` cdk synth ```
+7. Deploy the code ``` cdk deploy <stack_name> ```
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+## Resources Created
+This CDK application creates the following resources in your AWS account:
 
-```
-$ source .venv/bin/activate
-```
+* An SQS queue that receives messages from the device.
+* A Lambda function that is triggered by messages in the SQS queue.
+* A DynamoDB table that stores the payload coming from the device using the device unique identifier as the reference.
 
-If you are a Windows platform, you would activate the virtualenv like this:
+All resources have a common prefix and environment suffix assigned to them, and all resources have names defined.
 
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+## Cleanup
+To delete all the resources created by this CDK application, run ```cdk destroy <stack_name> ``` in the root directory 
+of the project. This will delete the CloudFormation stack and all resources associated with it. Don't forget to 
+also delete the virtual environment by running deactivate in your terminal.
